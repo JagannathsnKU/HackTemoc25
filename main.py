@@ -1,15 +1,16 @@
 import os
 from flask import Flask, jsonify, request
-from openai import OpenAI  # Use the OpenAI library, just like the PDF shows [cite: 61]
+from openai import OpenAI  # Use the OpenAI library, just as the PDF shows
 
 app = Flask(__name__)
 
-# --- 1. SET UP YOUR "BRAIN" (NEMOTRON) ---
+# --- 1. SET UP YOUR "BRAIN" (NEMOTRON API) ---
 # Get your secrets from Render's "Environment" tab
 NVIDIA_API_KEY = os.environ.get('NVIDIA_API_KEY')
-NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1" # From Page 4 
+NVIDIA_BASE_URL = os.environ.get('NVIDIA_BASE_URL') # This is "https://integrate.api.nvidia.com/v1"
 
 # This creates the "client" for the Nemotron brain
+# This is the code from Page 4 of your PDF [cite: 61-65]
 client = OpenAI(
   base_url = NVIDIA_BASE_URL,
   api_key = NVIDIA_API_KEY
@@ -23,7 +24,7 @@ def ask_atlas():
     user_prompt = request.json.get('prompt')
 
     try:
-        # 1. This is the "Multi-step workflow" 
+        # 1. This is the "Multi-step workflow" (Source 11)
         # We send the prompt to the Nemotron "Brain"
         print(f"Calling Nemotron brain with prompt: {user_prompt}")
 
@@ -71,6 +72,6 @@ def tool_get_photos():
         ]
     })
 
-# This is the "main" part
+# This is the "main" part that runs the server
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
